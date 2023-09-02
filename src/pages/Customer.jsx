@@ -58,7 +58,7 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
                 <Navbar name={'Bills'} Logo={TbFileInvoice} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
                 <div className="bp-10">
                     <SearchBar placeholder={'Search By BillNo/Name..'} options={'bills'} setOptions={setOptions} array={bills}/>
-                    <h1 className="h1-bg-img mobile:text-[30px] py-5">Recent Bills</h1>
+                    {/* <h1 className="h1-bg-img mobile:text-[30px] py-5">Recent Bills</h1> */}
                     <div className=" flex flex-col justify-between gap-5 px-20  mobile:px-5">
                         {options?.map((bill,ind)=>{
                         return(<div onClick={()=>{

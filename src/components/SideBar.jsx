@@ -51,7 +51,7 @@ export default function SideBar({displaySidebar,setDisplaySidebar}){
             {displaySidebar && <div className=" animate-slide z-10 min-h-[100vh] bg-[#283a47]  fixed left-0 bottom-0 top-0 pb-10 text-gray-300 font-semibold">
                 <div className='bg-[#23333e] flex justify-between items-center ps-5 gap-3 py-5 px-12 cursor-pointer'>
                     <TbUserCircle size={30} className=' '/>
-                    <p>User Name</p>
+                    <p>Khaja Sawmill</p>
                 </div>
                 <ul className='mt-20 flex flex-col justify-between gap-3'>
                     <li className='  relative'>

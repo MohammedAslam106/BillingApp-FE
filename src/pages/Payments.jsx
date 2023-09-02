@@ -27,7 +27,7 @@ export default function Payments({displaySidebar,setDisplaySidebar,AddButton}){
                             <div className="flex flex-col w-[80%]">
                                 <h1 className=" font-bold ">{payment?.customer?.name}</h1>
                                 <p className=" font-semibold text-gray-400">Bill Number: {payment?.bill?.billNumber}</p>
-                                <p className=" font-semibold text-gray-400">Created At: {new Date(payment.createdAt).toUTCString()}</p>
+                                <p className=" font-semibold text-gray-400">{new Date(payment.createdAt).toGMTString().slice(0,17)}</p>
                             </div>
                             <div>
                                 <span className=" text-green-500 font-semibold ">{payment.paidAmount}</span>

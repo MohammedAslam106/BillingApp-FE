@@ -66,7 +66,7 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
                             <p className=" font-semibold text-lg">{bill?.billNumber}</p>
                             <div className="flex flex-col w-full mx-5">
                                 <h1 className=" font-semibold">{bill?.customer?.name} ({bill?.customer?.phone})</h1>
-                                <p className=" font-semibold text-gray-400">Last Update: <span>{new Date(bill.updatedAt).toUTCString().slice(0,22)}</span></p>
+                                <p className=" font-semibold text-gray-400">Last Update: <span>{new Date(bill.updatedAt).toUTCString().slice(0,17)}</span></p>
                                 {/* <p className=" font-bold text-gray-400">Created: <span>{new Date(bill.createdAt).toUTCString().slice(0,22)}</span></p> */}
                             </div>
                             <TbDotsVertical  onClick={(e)=>{

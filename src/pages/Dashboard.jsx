@@ -17,6 +17,7 @@ export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
     useEffect(()=>{
         setDisplaySidebar(false)
         setCount(Math.ceil(customers.length/8))
+       
     },[])
     
     return(
@@ -29,6 +30,12 @@ export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
                     <SearchBar placeholder={'Search By Ph/Name..'} options={'customers'} setOptions={setCustomers} array={customers1} />
                     <div className=" flex flex-wrap justify-center items-center gap-5 py-15 px-20">
                     {customers?.slice(startInd,lastInd).map((customer,ind)=>{
+                         let count=0
+                         customer?.bills?.forEach((bill)=>{
+                            if(bill.balanceAmount!=0){
+                                count++
+                            }
+                         })
                         return (
                                 <div onClick={()=>{
                                     navigate(`${customer._id}`)
@@ -38,7 +45,7 @@ export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
                                         <p className=" text-xs text-gray-500">{customer.phone}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-gray-300 ">Number of bills pending: <span className="text-gray-500">{customer?.bills?.length}</span></p>
+                                        <p className="text-xs font-bold text-gray-300 ">Number of bills pending: <span className="text-gray-500">{count}</span></p>
                                         <p className=" text-xs font-bold text-gray-300">Last bill created: <span className=" text-gray-500">{customer?.updatedAt.slice(0,10)}</span></p>
                                     </div>
                                 </div>

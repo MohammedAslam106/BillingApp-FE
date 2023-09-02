@@ -46,6 +46,9 @@ export default function InventoryStock({displaySidebar,setDisplaySidebar,AddButt
                             <div className=" w-[250px] h-[250px] m-2">
                                 <DoughnutChart inpOutUnit={prodcut.specialCalculations.storingUnit} name={prodcut.name} input={prodcut.quantity.value} output={prodcut.sold.value}/>
                             </div>
+                            <div>
+                                {/* {new Date(prodcut?.createdAt).toLocaleDateString()} */}
+                            </div>
                             {deleteBtn && <div onMouseLeave={()=>setDeleteBtn(false)} style={{left:coordinates.x-60,top:coordinates.y}} className=" bg-white rounded shadow-lg absolute w-20">
                                 <button onClick={()=>setUpdateInventoryModal(true)} className="w-full py-1 px-3 text-start hover:bg-gray-100">Edit</button>
                                 {/* <button onClick={()=>deleteStock()} className="w-full py-1 px-3 text-start hover:bg-gray-100">Delete</button> */}
