@@ -1,0 +1,13 @@
+@import 'animate.css';
+
+
+.animate-in{
+    animation: slideInUp 1s   backwards;
+}
+.animate-out{
+    animation: slideInRight 0.5s forwards;
+}
+
+.animate-slide{
+    animation: slideInLeft 1s forwards;
+}
