@@ -14,7 +14,7 @@ export default function AuthProvider({children}){
         // console.log(currentUser)
     })
     const signin=async(username,password)=>{
-        const response= (await fetch('http://localhost:3000/api/auth/signin',{
+        const response= (await fetch(`${import.meta.env.VITE_PUBLIC_BE_URL}/api/auth/signin`,{
             method:"POST",
             body:JSON.stringify({
                 username:username,
