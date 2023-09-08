@@ -22,20 +22,56 @@ function App() {
   return (
     <>
     <AuthProvider>
-      <FetchProvider>
+      {/* <FetchProvider> */}
       <Routes>
         <Route path='/' element={<ProtectedRoute/>}>
-          <Route index element={<Dashboard displaySidebar={displaySidebar} AddButton={AddButton} setDisplaySidebar={setDisplaySidebar}/>}/>
-          <Route path=':customer' element={<Customer displaySidebar={displaySidebar} AddButton={AddButton} setDisplaySidebar={setDisplaySidebar}/>}/>
-          <Route path='bills' element={<Bills createBill={createBill} setCreateBill={setCreateBill} AddButton={AddButton} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />}/>
-          <Route path='bills/:bill' element={<BillShow AddButton={AddButton} setDisplaySidebar={setDisplaySidebar}/>}/>
-          <Route path='payments' element={<Payments AddButton={AddButton} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />} />
-          <Route path='inventory' element={<InventoryStock AddButton={AddButton} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />} />
+          <Route index element={
+            <>
+            <FetchProvider>
+              <Dashboard displaySidebar={displaySidebar} AddButton={AddButton} setDisplaySidebar={setDisplaySidebar}/>
+            </FetchProvider>
+            </>
+          }/>
+          <Route path=':customer' element={
+            <>
+              <FetchProvider>
+                <Customer displaySidebar={displaySidebar} AddButton={AddButton} setDisplaySidebar={setDisplaySidebar}/>
+              </FetchProvider>
+            </>
+          }/>
+          <Route path='bills' element={
+            <>
+            <FetchProvider>
+              <Bills createBill={createBill} setCreateBill={setCreateBill} AddButton={AddButton} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
+            </FetchProvider>
+            </>
+          }/>
+          <Route path='bills/:bill' element={
+            <>
+              <FetchProvider>
+                <BillShow AddButton={AddButton} setDisplaySidebar={setDisplaySidebar}/>
+              </FetchProvider>
+            </>
+          }/>
+          <Route path='payments' element={
+            <>
+              <FetchProvider>
+                <Payments AddButton={AddButton} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
+              </FetchProvider>
+            </>
+          } />
+          <Route path='inventory' element={
+            <>
+              <FetchProvider>
+                <InventoryStock AddButton={AddButton} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
+              </FetchProvider>
+            </>
+          } />
         </Route>
         <Route path='/signin' element={<Signin/>} />
         <Route path='*' element={<PageNotFound/>}/>
       </Routes>
-      </FetchProvider>
+      {/* </FetchProvider> */}
     </AuthProvider>
     </>
   )

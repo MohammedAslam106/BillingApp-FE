@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react"
 
 export default function SearchBar({options,placeholder,setOptions,array}){
@@ -15,7 +16,7 @@ export default function SearchBar({options,placeholder,setOptions,array}){
             }))   
         }else if(options=='payments'){
             setOptions(array.filter((value)=>{
-                return value?.bill?.billNumber.toString().includes(onSearchChange) || value.customer?.name.toLowerCase().includes(onSearchChange.toLowerCase())
+                return value?.billNumber.toString().includes(onSearchChange) || value.customer?.name.toLowerCase().includes(onSearchChange.toLowerCase())
             }))
         }
     },[onSearchChange])

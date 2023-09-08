@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { request } from "../../utils"
+import { Toaster, toast } from "react-hot-toast"
 
 // eslint-disable-next-line react/prop-types
 export default function FormCustomer({setCreateCustomer}){
@@ -11,17 +12,26 @@ export default function FormCustomer({setCreateCustomer}){
     })
     return(
         <>
+            <Toaster/>
             <h1 className=" font-semibold text-gray-400 text-2xl text-center">Add New Customer</h1>
             <div>
                 <form onSubmit={async(e)=>{
                     e.preventDefault()
-                    const response=await request('customer',{method:'POST',body:{
-                        name:name,
-                        phone:phone,
-                        address:address,
-                    }})
-                    if(response.response.name){
-                        window.location.reload()
+                    try {
+                        const response=await request('customer',{method:'POST',body:{
+                            name:name,
+                            phone:phone,
+                            address:address,
+                        }})
+                        console.log(response)
+                        if(response?.response?.name){
+                            window.location.reload()
+                        }else{
+                            toast.error('User with this phone number already exist!')
+                        }
+                        
+                    } catch (error) {
+                        toast.error(error.message || error)
                     }
                 }}>
                 <ul>

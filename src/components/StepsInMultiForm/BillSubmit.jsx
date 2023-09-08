@@ -7,7 +7,7 @@ import Modal from "../Modal"
 
 // eslint-disable-next-line react/prop-types
 export default function BillSubmit({formName,customer,billProducts,...rest}){
-    console.log(billProducts)
+    console.log(rest.prevProducts)
     const {bills,updatesAfterBillCreation}=useFetch()
     const billNumber=rest?.billNumber?rest?.billNumber:bills.length==0 ? 1:bills[bills.length-1].billNumber+1
     const [items,setItems]=useState([])
@@ -49,18 +49,20 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
             }
 
             // productUp
-            if(!rest?.billNumber){
-                billProducts.forEach((product)=>{
-                    console.log(product.product.specialCalculations.storingUnit)
+
+
+            //prevProducts update if it is updating it
+            if(rest.billNumber){
+                rest.prevProducts.forEach((product)=>{
                     if(product.product.specialCalculations.storingUnit==product.product.specialCalculations.sellingUnit){
-                        const midVal=rest?.billNumber?product?.prevQuantity:0
-                        console.log(product.product.sold?.value - midVal + Number(product.quantity))
                         const productBody={
-                            quantity:{value:product.product.quantity.value + midVal - Number(product.quantity),unit:product.product.quantity.unit},
-                            sold:{value:product.product.sold?.value - midVal + Number(product.quantity),unit:product.product.sold.unit}
-                    }
+                            quantity:{value:product.product.quantity.value + Number(product.quantity),unit:product.product.quantity.unit},
+                            sold:{value:product.product.sold?.value - Number(product.quantity),unit:product.product.sold.unit}
+                        }
                         updatesAfterBillCreation(productBody,`product/${product.product._id}`)
-                    }else{
+                
+                    }
+                    else{
                         let multiplyiingValue
                         if(product.product.specialCalculations.storingUnit=='kg'){
                             multiplyiingValue=product.product.characteristics.weight.value
@@ -70,11 +72,9 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
                         }else if(product.product.specialCalculations.storingUnit=='sqft'){
                             multiplyiingValue=product.product.characteristics.height.value*product.product.characteristics.width.value
                         }
-                        const midVal=rest?.billNumber?product?.prevQuantity:0
-                        console.log(midVal)
                         const productBody={
-                            quantity:{value:product.product.quantity.value + midVal*multiplyiingValue - Number(product.quantity*multiplyiingValue),unit:product.product.quantity.unit},
-                            sold:{value:product.product.sold?.value - midVal*multiplyiingValue + Number(product.quantity*multiplyiingValue),unit:product.product.sold.unit}
+                            quantity:{value:product.product.quantity.value + Number(product.quantity*multiplyiingValue),unit:product.product.quantity.unit},
+                            sold:{value:product.product.sold?.value - Number(product.quantity*multiplyiingValue),unit:product.product.sold.unit}
                     }
                     updatesAfterBillCreation(productBody,`product/${product.product._id}`)
                     if(product.product.specialCalculations.storingUnit=='piece'){
@@ -88,16 +88,59 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
                         else if(product.product.specialCalculations.sellingUnit=='sqft'){
                             dividingValue=product.product.characteristics.height.value*product.product.characteristics.height.value
                         }
-                        const midVal=rest?.billNumber?product?.prevQuantity:0
                         const productBody={
-                            quantity:{value:product.product.quantity.value + midVal/dividingValue - Number(product.quantity/dividingValue),unit:product.product.quantity.unit},
-                            sold:{value:product.product.sold?.value - midVal/dividingValue + Number(product.quantity/dividingValue),unit:product.product.sold.unit}
+                            quantity:{value:product.product.quantity.value  + Number(product.quantity/dividingValue),unit:product.product.quantity.unit},
+                            sold:{value:product.product.sold?.value - Number(product.quantity/dividingValue),unit:product.product.sold.unit}
                     }
                     updatesAfterBillCreation(productBody,`product/${product.product._id}`)
                     }
                     }
                 })
             }
+            // if(!rest?.billNumber){
+                billProducts.forEach((product)=>{
+                    if(product.product.specialCalculations.storingUnit==product.product.specialCalculations.sellingUnit){
+                        console.log(product.product.sold?.value + Number(product.quantity))
+                        const productBody={
+                            quantity:{value:product.product.quantity.value - Number(product.quantity),unit:product.product.quantity.unit},
+                            sold:{value:product.product.sold?.value + Number(product.quantity),unit:product.product.sold.unit}
+                    }
+                        updatesAfterBillCreation(productBody,`product/${product.product._id}`)
+                    }
+                    else{
+                        let multiplyiingValue
+                        if(product.product.specialCalculations.storingUnit=='kg'){
+                            multiplyiingValue=product.product.characteristics.weight.value
+                            console.log(product.quantity*multiplyiingValue,product.product.characteristics.weight.value)
+                        }else if(product.product.specialCalculations.storingUnit=='m'){
+                            multiplyiingValue=product.product.characteristics.height.value
+                        }else if(product.product.specialCalculations.storingUnit=='sqft'){
+                            multiplyiingValue=product.product.characteristics.height.value*product.product.characteristics.width.value
+                        }
+                        const productBody={
+                            quantity:{value:product.product.quantity.value - Number(product.quantity*multiplyiingValue),unit:product.product.quantity.unit},
+                            sold:{value:product.product.sold?.value + Number(product.quantity*multiplyiingValue),unit:product.product.sold.unit}
+                    }
+                    updatesAfterBillCreation(productBody,`product/${product.product._id}`)
+                    if(product.product.specialCalculations.storingUnit=='piece'){
+                        let dividingValue
+                        if(product.product.specialCalculations.sellingUnit=='kg'){
+                            dividingValue=product.product.characteristics.weight.value
+                        }
+                        else if(product.product.specialCalculations.sellingUnit=='m'){
+                            dividingValue=product.product.characteristics.height.value
+                        }
+                        else if(product.product.specialCalculations.sellingUnit=='sqft'){
+                            dividingValue=product.product.characteristics.height.value*product.product.characteristics.height.value
+                        }
+                        const productBody={
+                            quantity:{value:product.product.quantity.value  - Number(product.quantity/dividingValue),unit:product.product.quantity.unit},
+                            sold:{value:product.product.sold?.value + Number(product.quantity/dividingValue),unit:product.product.sold.unit}
+                    }
+                    updatesAfterBillCreation(productBody,`product/${product.product._id}`)
+                    }
+                    }
+                })
         }
         setShowUpdatedBillPopup(true)
     }
@@ -108,7 +151,7 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
             })
         )
         const subTotal=billProducts?.reduce((prev,current)=>{
-            if((['sheets','sheet','playwood'].includes(current.product?.category?.name.toLowerCase()))){
+            if((['sheets','sheet','plywood'].includes(current.product?.category?.name.toLowerCase()))){
                 return prev+=current.product?.characteristics?.width.value*current.product?.characteristics?.height.value*current?.quantity*current?.rate
             }
             else{
@@ -116,10 +159,9 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
             }
         },0)
         setTotalAmt(subTotal)
-        setBalanceAmt(rest?.billNumber?subTotal-rest?.paidAmount:0)
+        setBalanceAmt(rest?.billNumber?subTotal-rest?.paidAmount:paidAmt==0?subTotal:subTotal-paidAmt)
         setPaidAmt(rest?.paidAmount)
-        setTotalAmtInWords(convertNumberToWords(subTotal))
-        // console.log(customer._id)
+        setTotalAmtInWords(convertNumberToWords(Math.floor(subTotal)))
     },[])
     return(
         <>
@@ -134,7 +176,14 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
                 </div>
                 <h1 className=" text-center my-5 font-semibold text-2xl bg-teal-200">Invoice</h1>
                 <div className="  font-semibold flex justify-between items-center">
-                    <h1>Bill To:{customer?.name}</h1>
+                    <h1 className=" flex flex-col">
+                        <span>
+                            Bill To: {customer?.name}
+                        </span>
+                        <span>
+                            Ph: {customer?.phone}
+                        </span>
+                    </h1>
                     <h1 >
                         <div className=" flex flex-col justify-center items-center">
                             <span>Bill No:{billNumber}</span>

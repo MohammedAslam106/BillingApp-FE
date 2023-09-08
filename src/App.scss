@@ -38,3 +38,7 @@
     -webkit-background-clip: text;
     color: transparent;
 }
+
+.nav-bar--hidden {
+    transform: translateY(-100%);
+}

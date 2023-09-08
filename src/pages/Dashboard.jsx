@@ -17,9 +17,7 @@ export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
     useEffect(()=>{
         setDisplaySidebar(false)
         setCount(Math.ceil(customers.length/8))
-       
     },[])
-    
     return(
         <>
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />

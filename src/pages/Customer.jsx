@@ -1,13 +1,18 @@
+/* eslint-disable no-unused-vars */
 import Navbar from "../components/Navbar";
-import { TbDotsVertical, TbFileInvoice} from 'react-icons/tb'
+import { TbDotsVertical, TbFileInvoice, TbX} from 'react-icons/tb'
 import SideBar from "../components/SideBar";
 import { useEffect, useState } from "react";
 import { useFetch } from "../context/FetchContext";
 import { request } from "../utils";
 import Modal from "../components/Modal";
+import FormBill from "../components/Forms/FormBill";
 import SearchBar from "../components/SearchBar";
 import { useNavigate, useParams } from "react-router-dom";
 import BillSubmit from "../components/StepsInMultiForm/BillSubmit";
+import MultiStepForm from "../components/MultiStepForm";
+import BillAddCustomer from "../components/StepsInMultiForm/BillAddCustomer";
+import BillAddProduct from "../components/StepsInMultiForm/BillAddProduct";
 
 // eslint-disable-next-line react/prop-types
 export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
@@ -56,7 +61,7 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
             <div className=" mobile:ml-0 ml-[210px] min-h-screen">
                 <Navbar name={'Bills'} Logo={TbFileInvoice} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
-                <div className="bp-10">
+                <div className="bp-10 mt-16">
                     <SearchBar placeholder={'Search By BillNo/Name..'} options={'bills'} setOptions={setOptions} array={bills}/>
                     {/* <h1 className="h1-bg-img mobile:text-[30px] py-5">Recent Bills</h1> */}
                     <div className=" flex flex-col justify-between gap-5 px-20  mobile:px-5">
@@ -67,7 +72,7 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
                             <p className=" font-semibold text-lg">{bill?.billNumber}</p>
                             <div className="flex flex-col w-full mx-5">
                                 <h1 className=" font-semibold">{bill?.customer?.name} ({bill?.customer?.phone})</h1>
-                                <p className=" font-semibold text-gray-400">Last Update: <span>{new Date(bill.updatedAt).toUTCString().slice(0,22)}</span></p>
+                                <p className=" font-semibold text-gray-400">Last Update: <span>{new Date(bill.updatedAt).toUTCString().slice(0,17)}</span></p>
                                 {/* <p className=" font-bold text-gray-400">Created: <span>{new Date(bill.createdAt).toUTCString().slice(0,22)}</span></p> */}
                             </div>
                             <TbDotsVertical  onClick={(e)=>{
@@ -93,17 +98,22 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
             </div>
             <AddButton/>
             <Modal isOpen={editBill} closeModal={()=>setEditBill(false)}>
-                <BillSubmit billProducts={deleteEditBill?.items?.map((item)=>{
-                    return {product:item.product,quantity:item.quantity,rate:item.price,prevQuantity:item.quantity}
-                })} 
-                customer={deleteEditBill?.customer} 
-                paidAmount={deleteEditBill?.paidAmount} 
-                balanceAmount={deleteEditBill?.balanceAmount} 
-                billNumber={deleteEditBill?.billNumber} 
-                objectId={deleteEditBill?._id}
+                <FormBill
+                    Editproducts={deleteEditBill?.items?.map((item)=>{
+                        return {product:item.product,quantity:item.quantity,rate:item.price,prevQuantity:item.quantity}
+                    })}
+                    EditCustomer={deleteEditBill?.customer}
+                    billNumber={deleteEditBill?.billNumber} 
+                    objectId={deleteEditBill?._id}
+                    paidAmount={deleteEditBill?.paidAmount}
+                    prevProducts={deleteEditBill?.items?.map((item)=>{
+                        return {product:item.product,rate:item.price,quantity:item.quantity}
+                    })}
                 />
             </Modal>
         </>
     )
 }
+
+
 

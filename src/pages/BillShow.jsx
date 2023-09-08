@@ -21,7 +21,7 @@ export default function BillShow({setDisplaySidebar}){
     useEffect(()=>{
         setBillDetails(...bills.filter((Bill)=>{
             if(Bill._id==bill){
-                setTotalAmtInWords(()=>convertNumberToWords(Bill?.totalAmount))
+                setTotalAmtInWords(()=>convertNumberToWords(Math.floor(Bill?.totalAmount)))
             }
             return  Bill._id==bill
         }
@@ -46,7 +46,14 @@ export default function BillShow({setDisplaySidebar}){
                 </div>
                 <h1 className=" text-center my-5 font-semibold text-2xl bg-teal-200 mx-10">Invoice</h1>
                 <div className="  font-semibold flex justify-between items-center px-10">
-                    <h1>Bill To:{billDetails?.customer?.name}</h1>
+                    <h1 className=" flex flex-col">
+                        <span>
+                            Bill To: {billDetails?.customer?.name}
+                        </span>
+                        <span>
+                            Ph: {billDetails?.customer?.phone}
+                        </span>
+                    </h1>
                     <h1 >
                         <div className=" flex flex-col justify-center items-center">
                             <span>Bill No:{billDetails?.billNumber}</span>

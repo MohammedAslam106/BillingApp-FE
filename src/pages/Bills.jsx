@@ -10,6 +10,9 @@ import FormBill from "../components/Forms/FormBill";
 import SearchBar from "../components/SearchBar";
 import { useNavigate } from "react-router-dom";
 import BillSubmit from "../components/StepsInMultiForm/BillSubmit";
+import MultiStepForm from "../components/MultiStepForm";
+import BillAddCustomer from "../components/StepsInMultiForm/BillAddCustomer";
+import BillAddProduct from "../components/StepsInMultiForm/BillAddProduct";
 
 // eslint-disable-next-line react/prop-types
 export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
@@ -92,14 +95,17 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
             </div>
             <AddButton/>
             <Modal isOpen={editBill} closeModal={()=>setEditBill(false)}>
-                <BillSubmit billProducts={deleteEditBill?.items?.map((item)=>{
-                    return {product:item.product,quantity:item.quantity,rate:item.price,prevQuantity:item.quantity}
-                })} 
-                customer={deleteEditBill?.customer} 
-                paidAmount={deleteEditBill?.paidAmount} 
-                balanceAmount={deleteEditBill?.balanceAmount} 
-                billNumber={deleteEditBill?.billNumber} 
-                objectId={deleteEditBill?._id}
+                <FormBill
+                    Editproducts={deleteEditBill?.items?.map((item)=>{
+                        return {product:item.product,quantity:item.quantity,rate:item.price,prevQuantity:item.quantity}
+                    })}
+                    EditCustomer={deleteEditBill?.customer}
+                    billNumber={deleteEditBill?.billNumber} 
+                    objectId={deleteEditBill?._id}
+                    paidAmount={deleteEditBill?.paidAmount}
+                    prevProducts={deleteEditBill?.items?.map((item)=>{
+                        return {product:item.product,rate:item.price,quantity:item.quantity}
+                    })}
                 />
             </Modal>
         </>

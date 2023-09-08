@@ -11,8 +11,8 @@ export default function AuthProvider({children}){
     const [currentUser,setCurrentUser]=useState(null)
     useEffect(()=>{
         setCurrentUser(localStorage.getItem('shopOwner'))
-        // console.log(currentUser)
-    })
+        console.log('AuthContext line-14')
+    },[currentUser])
     const signin=async(username,password)=>{
         const response= (await fetch(`${import.meta.env.VITE_PUBLIC_BE_URL}/api/auth/signin`,{
             method:"POST",
@@ -25,15 +25,16 @@ export default function AuthProvider({children}){
             }
         }))
         const status=response.status
+        const res=await response.json()
         if(status===200){
-            const res=await response.json()
             localStorage.setItem('shopOwner',res.token)
-            setCurrentUser(res.token)
-            window.location.reload()
-            // return true
+            setTimeout(()=>{
+                setCurrentUser(res.token)
+            },1000)
+            return res
         }
         else{
-            return false
+            return res
         }
     }
     const signout=()=>{
