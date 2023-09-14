@@ -3,10 +3,9 @@ import {TbBuildingStore} from 'react-icons/tb'
 import SideBar from "../components/SideBar";
 import { DoughnutChart } from "../components/Doughnut";
 import { useEffect, useState } from "react";
-import { useFetch } from "../context/FetchContext";
-// import { request } from "../utils";
 import Modal from "../components/Modal";
 import FormInventory from "../components/Forms/FormInventory";
+import { request } from "../utils";
 
 // eslint-disable-next-line react/prop-types
 export default function InventoryStock({displaySidebar,setDisplaySidebar,AddButton}){
@@ -14,7 +13,7 @@ export default function InventoryStock({displaySidebar,setDisplaySidebar,AddButt
     const [coordinates,setCoordinates]=useState({x:0,y:0})
     const [updateInventoryModal,setUpdateInventoryModal]=useState(false)
     const [updateInventory,setUpdateInventory]=useState(null)
-    const values=useFetch()
+    const [products,setProducts]=useState([])
 
     // const deleteStock=async(id)=>{
     //     const response=await request(`product/${id}`,{method:"DELETE"})
@@ -22,8 +21,16 @@ export default function InventoryStock({displaySidebar,setDisplaySidebar,AddButt
     // }
 
     useEffect(()=>{
+        const fetchProducts=async()=>{
+            const response=await request('product',{})
+            // console.log(response)
+            if(response.response.length){
+                setProducts(response.response)
+            }
+        }
+        fetchProducts()
         setDisplaySidebar(false)
-    },[setDisplaySidebar])
+    },[])
     return(
         <>
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
@@ -32,7 +39,7 @@ export default function InventoryStock({displaySidebar,setDisplaySidebar,AddButt
                 <div className=" pb-10 mt-16">
                     {/* <h1 className="h1-bg-img mobile:text-[30px] py-5">Products Available</h1> */}
                    <div className=" flex flex-wrap justify-center items-center gap-5 py-15 px-20">
-                        {values.products?.map((prodcut,ind)=>{
+                        {products?.map((prodcut,ind)=>{
                             return (
                             <div  onContextMenu={(e)=>{
                                 e.preventDefault()

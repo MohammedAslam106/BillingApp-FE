@@ -1,15 +1,16 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react"
-import { useFetch } from "../../context/FetchContext"
+// import { useFetch } from "../../context/FetchContext"
 import {LiaRupeeSignSolid} from 'react-icons/lia'
 import { convertNumberToWords, request } from "../../utils"
 import Modal from "../Modal"
+import toast from "react-hot-toast"
 
 // eslint-disable-next-line react/prop-types
 export default function BillSubmit({formName,customer,billProducts,...rest}){
-    console.log(rest.prevProducts)
-    const {bills,updatesAfterBillCreation}=useFetch()
-    const billNumber=rest?.billNumber?rest?.billNumber:bills.length==0 ? 1:bills[bills.length-1].billNumber+1
+    // const {bills}=useFetch()
+    const [billNumber,setBillNumber]=useState(null)
+    // const billNumber=rest?.billNumber?rest?.billNumber:bills?.length==0 ? 1:bills[bills?.length-1].billNumber+1
     const [items,setItems]=useState([])
     const [totalAmt,setTotalAmt]=useState(0)
     const [paidAmt,setPaidAmt]=useState(0)
@@ -17,7 +18,17 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
     const [showUpdatedBillPopup,setShowUpdatedBillPopup]=useState(false)
     const [totalAmtInWords,setTotalAmtInWords]=useState('')
 
+
+    const updatesAfterBillCreation=async(body,endPoint)=>{
+        const response=await request(`${endPoint}`,{method:"PATCH",body:body})
+        console.log(response)
+    }
+
     const submitBill=async()=>{
+        if(!customer){
+            toast.error('Please select the customer!')
+            return
+        }
         let response=null
         const body={
             billNumber:billNumber,
@@ -29,18 +40,18 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
         }
         if(!rest?.billNumber){
             response=await request('bill',{method:'POST',body:body})
-            // console.log(response)
+            console.log(response)
         }else{
             response=await request(`bill/${rest?.objectId}`,{method:'PATCH',body:body})
         }
         if(response.response.billNumber || response.response.modifiedCount==1){
             // paymentCr
-            const paymentRes=await request('payment',{method:'POST',body:{
-                bill:response.response._id?response.response._id:rest?.objectId,
-                customer:customer._id,
-                paidAmount:rest?.billNumber?paidAmt-rest?.paidAmount:paidAmt
-            }})
-            console.log(paymentRes)
+            // const paymentRes=await request('payment',{method:'POST',body:{
+            //     bill:response.response._id?response.response._id:rest?.objectId,
+            //     customer:customer._id,
+            //     paidAmount:rest?.billNumber?paidAmt-rest?.paidAmount:paidAmt
+            // }})
+            // console.log(paymentRes)
             
             // customerUp
             if(!rest?.billNumber){
@@ -49,17 +60,16 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
             }
 
             // productUp
-
-
-            //prevProducts update if it is updating it
             if(rest.billNumber){
-                rest.prevProducts.forEach((product)=>{
+                rest.prevProducts.forEach(async(product)=>{
+                    console.log(product)
                     if(product.product.specialCalculations.storingUnit==product.product.specialCalculations.sellingUnit){
+                        console.log(product.product.sold?.value - Number(product.quantity))
                         const productBody={
                             quantity:{value:product.product.quantity.value + Number(product.quantity),unit:product.product.quantity.unit},
                             sold:{value:product.product.sold?.value - Number(product.quantity),unit:product.product.sold.unit}
                         }
-                        updatesAfterBillCreation(productBody,`product/${product.product._id}`)
+                        await updatesAfterBillCreation(productBody,`product/${product.product._id}`)
                 
                     }
                     else{
@@ -76,7 +86,7 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
                             quantity:{value:product.product.quantity.value + Number(product.quantity*multiplyiingValue),unit:product.product.quantity.unit},
                             sold:{value:product.product.sold?.value - Number(product.quantity*multiplyiingValue),unit:product.product.sold.unit}
                     }
-                    updatesAfterBillCreation(productBody,`product/${product.product._id}`)
+                    await updatesAfterBillCreation(productBody,`product/${product.product._id}`)
                     if(product.product.specialCalculations.storingUnit=='piece'){
                         let dividingValue
                         if(product.product.specialCalculations.sellingUnit=='kg'){
@@ -92,57 +102,59 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
                             quantity:{value:product.product.quantity.value  + Number(product.quantity/dividingValue),unit:product.product.quantity.unit},
                             sold:{value:product.product.sold?.value - Number(product.quantity/dividingValue),unit:product.product.sold.unit}
                     }
-                    updatesAfterBillCreation(productBody,`product/${product.product._id}`)
+                    await updatesAfterBillCreation(productBody,`product/${product.product._id}`)
                     }
                     }
                 })
             }
-            // if(!rest?.billNumber){
-                billProducts.forEach((product)=>{
-                    if(product.product.specialCalculations.storingUnit==product.product.specialCalculations.sellingUnit){
-                        console.log(product.product.sold?.value + Number(product.quantity))
-                        const productBody={
-                            quantity:{value:product.product.quantity.value - Number(product.quantity),unit:product.product.quantity.unit},
-                            sold:{value:product.product.sold?.value + Number(product.quantity),unit:product.product.sold.unit}
-                    }
-                        updatesAfterBillCreation(productBody,`product/${product.product._id}`)
-                    }
-                    else{
-                        let multiplyiingValue
-                        if(product.product.specialCalculations.storingUnit=='kg'){
-                            multiplyiingValue=product.product.characteristics.weight.value
-                            console.log(product.quantity*multiplyiingValue,product.product.characteristics.weight.value)
-                        }else if(product.product.specialCalculations.storingUnit=='m'){
-                            multiplyiingValue=product.product.characteristics.height.value
-                        }else if(product.product.specialCalculations.storingUnit=='sqft'){
-                            multiplyiingValue=product.product.characteristics.height.value*product.product.characteristics.width.value
-                        }
-                        const productBody={
-                            quantity:{value:product.product.quantity.value - Number(product.quantity*multiplyiingValue),unit:product.product.quantity.unit},
-                            sold:{value:product.product.sold?.value + Number(product.quantity*multiplyiingValue),unit:product.product.sold.unit}
-                    }
-                    updatesAfterBillCreation(productBody,`product/${product.product._id}`)
-                    if(product.product.specialCalculations.storingUnit=='piece'){
-                        let dividingValue
-                        if(product.product.specialCalculations.sellingUnit=='kg'){
-                            dividingValue=product.product.characteristics.weight.value
-                        }
-                        else if(product.product.specialCalculations.sellingUnit=='m'){
-                            dividingValue=product.product.characteristics.height.value
-                        }
-                        else if(product.product.specialCalculations.sellingUnit=='sqft'){
-                            dividingValue=product.product.characteristics.height.value*product.product.characteristics.height.value
-                        }
-                        const productBody={
-                            quantity:{value:product.product.quantity.value  - Number(product.quantity/dividingValue),unit:product.product.quantity.unit},
-                            sold:{value:product.product.sold?.value + Number(product.quantity/dividingValue),unit:product.product.sold.unit}
-                    }
-                    updatesAfterBillCreation(productBody,`product/${product.product._id}`)
-                    }
-                    }
-                })
-        }
+                    
+        } 
+        billProducts.forEach(async(product)=>{
+            const updatedProduct=await request(`product/${product?.product._id}`,{method:"GET"})
+            if(updatedProduct?.response.specialCalculations.storingUnit==updatedProduct?.response.specialCalculations.sellingUnit){
+                console.log(updatedProduct?.response.sold?.value, Number(product.quantity))
+                const productBody={
+                    quantity:{value:updatedProduct?.response.quantity.value - Number(product.quantity),unit:updatedProduct?.response.quantity.unit},
+                    sold:{value:updatedProduct?.response.sold?.value + Number(product.quantity),unit:updatedProduct?.response.sold.unit}
+            }
+                await updatesAfterBillCreation(productBody,`product/${updatedProduct?.response._id}`)
+            }
+            else{
+                let multiplyiingValue
+                if(updatedProduct?.response.specialCalculations.storingUnit=='kg'){
+                    multiplyiingValue=updatedProduct?.response.characteristics.weight.value
+                    console.log(product.quantity*multiplyiingValue,updatedProduct?.response.characteristics.weight.value)
+                }else if(updatedProduct?.response.specialCalculations.storingUnit=='m'){
+                    multiplyiingValue=updatedProduct?.response.characteristics.height.value
+                }else if(updatedProduct?.response.specialCalculations.storingUnit=='sqft'){
+                    multiplyiingValue=updatedProduct?.response.characteristics.height.value*updatedProduct?.response.characteristics.width.value
+                }
+                const productBody={
+                    quantity:{value:updatedProduct?.response.quantity.value - Number(product.quantity*multiplyiingValue),unit:updatedProduct?.response.quantity.unit},
+                    sold:{value:updatedProduct?.response.sold?.value + Number(product.quantity*multiplyiingValue),unit:updatedProduct?.response.sold.unit}
+            }
+            await updatesAfterBillCreation(productBody,`product/${updatedProduct?.response._id}`)
+            if(updatedProduct?.response.specialCalculations.storingUnit=='piece'){
+                let dividingValue
+                if(updatedProduct?.response.specialCalculations.sellingUnit=='kg'){
+                    dividingValue=updatedProduct?.response.characteristics.weight.value
+                }
+                else if(updatedProduct?.response.specialCalculations.sellingUnit=='m'){
+                    dividingValue=updatedProduct?.response.characteristics.height.value
+                }
+                else if(updatedProduct?.response.specialCalculations.sellingUnit=='sqft'){
+                    dividingValue=updatedProduct?.response.characteristics.height.value*updatedProduct?.response.characteristics.height.value
+                }
+                const productBody={
+                    quantity:{value:updatedProduct?.response.quantity.value  - Number(product.quantity/dividingValue),unit:updatedProduct?.response.quantity.unit},
+                    sold:{value:updatedProduct?.response.sold?.value + Number(product.quantity/dividingValue),unit:updatedProduct?.response.sold.unit}
+            }
+            await updatesAfterBillCreation(productBody,`product/${updatedProduct?.response._id}`)
+            }
+            }
+        })
         setShowUpdatedBillPopup(true)
+
     }
     useEffect(()=>{
         setItems(()=>
@@ -162,6 +174,15 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
         setBalanceAmt(rest?.billNumber?subTotal-rest?.paidAmount:paidAmt==0?subTotal:subTotal-paidAmt)
         setPaidAmt(rest?.paidAmount)
         setTotalAmtInWords(convertNumberToWords(Math.floor(subTotal)))
+
+        const fetchBills=async()=>{
+            const response=await request('bill',{})
+            // console.log(response)
+            if(response.response.length){
+                setBillNumber(rest?.billNumber?rest?.billNumber:response.response?.length==0 ? 1:response.response[response.response?.length-1].billNumber+1)
+            }
+        }
+        fetchBills()
     },[])
     return(
         <>
@@ -282,7 +303,9 @@ export default function BillSubmit({formName,customer,billProducts,...rest}){
                         <p className=" text-center py-2">Click the below button to update the bills and inventory.</p>
                         <div className=" w-full flex justify-center gap-3 mt-5">
                             <button onClick={()=>window.location.reload()} className=" bg-blue-400 rounded py-2 px-5 text-white hover:bg-blue-300">Update</button>
-                            <button onClick={()=>setShowUpdatedBillPopup(false)} className=" bg-gray-400 rounded py-2 px-5 text-white hover:bg-gray-300">Cancel</button>
+                            <button onClick={()=>{
+                                setShowUpdatedBillPopup(false)
+                                }} className=" bg-gray-400 rounded py-2 px-5 text-white hover:bg-gray-300">Cancel</button>
 
                         </div>
                     </div>

@@ -5,7 +5,13 @@ export default function ProtectedRoute(){
     const {currentUser}=useAuth()
     return(
         <>
-            {currentUser ? <Outlet/>:<Navigate to={'/signin'}/>}
+            {currentUser
+             ? 
+             <>
+             <Outlet/>
+             </>
+            : 
+            <Navigate to={'/signin'}/>}
         </>
     )
 }

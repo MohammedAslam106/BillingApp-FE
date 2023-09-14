@@ -10,6 +10,7 @@ export default function Signin(){
     const [username,setUsername]=useState('')
     const [password,setPassword]=useState('')
     const [loading,setLoading]=useState(false)
+    console.log(window.location.pathname)
     return(
         !currentUser ?
         <>
@@ -61,6 +62,6 @@ export default function Signin(){
                     </form>
                 </div>
             </div>
-        </>:<Navigate to={'/'}/>
+        </>:<Navigate to={`/`}/>
     )
 }

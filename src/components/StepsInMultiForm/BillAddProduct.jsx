@@ -2,14 +2,14 @@
 // import Dropdown from "../Dropdown";
 import { TbX } from "react-icons/tb";
 import { useEffect, useState } from "react";
-import { useFetch } from "../../context/FetchContext";
 import Modal from "../Modal";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
+import { request } from "../../utils";
 
 
 export default function BillAddProduct({billProducts,setBillProdcuts,formName}){
-    const {products}=useFetch()
     const [filterProducts,setFilterProducts]=useState([])
+    // const [products,setProducts]=useState([])
     const [isOpen,setIsOpen]=useState(false)
     const [deleteEditInd,setDeleteEditInd]=useState(0)
     const [deleteBtn,setDeleteBtn]=useState(false)
@@ -19,7 +19,15 @@ export default function BillAddProduct({billProducts,setBillProdcuts,formName}){
         rate:''
     })
     useEffect(()=>{
-        setFilterProducts(products)
+        const fetchProducts=async()=>{
+            const response=await request('product',{})
+            // console.log(response)
+            if(response.response.length){
+                // setProducts(response.response)
+                setFilterProducts(response.response)
+            }
+        }
+        fetchProducts()
     },[])
 
     return(
@@ -63,7 +71,6 @@ export default function BillAddProduct({billProducts,setBillProdcuts,formName}){
             </div>
             <Modal isOpen={isOpen} closeModal={()=>setIsOpen(false)}>
                 <>
-            <Toaster/>
                     <div className=" flex justify-between items-center">
                         <span></span>
                         <h1 className=" text-lg text-gray-400 font-semibold text-center">Add Product</h1>
@@ -77,12 +84,16 @@ export default function BillAddProduct({billProducts,setBillProdcuts,formName}){
                     <div className=" flex flex-col justify-center items-center gap-4 p-5 ">
                         <div className="relative w-full">
                             <label className=" font-semibold">Select the product</label>
-                            <select required onChange={(e)=>{setEachProduct(prev=>{return{
+                            <select required onChange={(e)=>{
+                                setEachProduct(prev=>{return{
                                         ...prev,
                                         product:e.target.value=='--Choose one'?{}:JSON.parse(e.target.value)
                                     }
                                     })
-                                    
+                                setFilterProducts(filterProducts.filter((product)=>{
+                                    console.log(product._id!=JSON.parse(e.target.value)._id);
+                                    return product._id!=JSON.parse(e.target.value)._id
+                                })) 
                                     }} size={1}  name="product" className="  w-full rounded shadow-sm py-2 px-2 border border-gray-800 text-gray-500" >
                                 <option selected >{'--Choose one'}</option>
                                 {filterProducts.map((pro,ind)=>{
@@ -97,7 +108,10 @@ export default function BillAddProduct({billProducts,setBillProdcuts,formName}){
                         <li className=" w-full relative">
                             <label className=" font-semibold">Quantity</label>
                             <input value={eachProduct?.quantity} required onChange={(e)=>setEachProduct(prev=>{
-                                if(eachProduct?.product?.quantity.value<e.target.value){
+                                if(JSON.stringify(eachProduct.product)==JSON.stringify({})){
+                                    toast.error('Please select the product.')
+                                }
+                                if(eachProduct?.product?.quantity?.value<e.target.value){
                                     toast.error('You do not have enough stock!')
                                 }
                                 return{
@@ -124,6 +138,12 @@ export default function BillAddProduct({billProducts,setBillProdcuts,formName}){
                             setBillProdcuts(billProducts.filter((product)=>{
                                 return product!=billProducts[deleteEditInd]
                             }))
+                            const newRow=[...filterProducts]
+                            newRow.push(billProducts[deleteEditInd].product)
+                            console.log(newRow)
+                            setFilterProducts(newRow)
+                            setEachProduct({product:{},quantity:0,rate:0})
+                            setDeleteBtn(false)
                             setIsOpen(false)
                         }} 
                         type="button">Delete</button>}

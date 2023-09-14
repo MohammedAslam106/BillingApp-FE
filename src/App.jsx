@@ -11,7 +11,7 @@ import { Route, Routes } from 'react-router-dom'
 import AuthProvider from './context/AuthContext'
 import PageNotFound from './pages/PageNotFound'
 import ProtectedRoute from './ProtectedRoute'
-import FetchProvider from './context/FetchContext'
+// import FetchProvider from './context/FetchContext'
 import AddButton from './components/AddButton'
 import Customer from './pages/Customer'
 import BillShow from './pages/BillShow'
@@ -27,44 +27,44 @@ function App() {
         <Route path='/' element={<ProtectedRoute/>}>
           <Route index element={
             <>
-            <FetchProvider>
+            {/* <FetchProvider> */}
               <Dashboard displaySidebar={displaySidebar} AddButton={AddButton} setDisplaySidebar={setDisplaySidebar}/>
-            </FetchProvider>
+            {/* </FetchProvider> */}
             </>
           }/>
           <Route path=':customer' element={
             <>
-              <FetchProvider>
+              {/* <FetchProvider> */}
                 <Customer displaySidebar={displaySidebar} AddButton={AddButton} setDisplaySidebar={setDisplaySidebar}/>
-              </FetchProvider>
+              {/* </FetchProvider> */}
             </>
           }/>
           <Route path='bills' element={
             <>
-            <FetchProvider>
+            {/* <FetchProvider> */}
               <Bills createBill={createBill} setCreateBill={setCreateBill} AddButton={AddButton} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
-            </FetchProvider>
+            {/* </FetchProvider> */}
             </>
           }/>
           <Route path='bills/:bill' element={
             <>
-              <FetchProvider>
+              {/* <FetchProvider> */}
                 <BillShow AddButton={AddButton} setDisplaySidebar={setDisplaySidebar}/>
-              </FetchProvider>
+              {/* </FetchProvider> */}
             </>
           }/>
           <Route path='payments' element={
             <>
-              <FetchProvider>
+              {/* <FetchProvider> */}
                 <Payments AddButton={AddButton} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
-              </FetchProvider>
+              {/* </FetchProvider> */}
             </>
           } />
           <Route path='inventory' element={
             <>
-              <FetchProvider>
+              {/* <FetchProvider> */}
                 <InventoryStock AddButton={AddButton} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
-              </FetchProvider>
+              {/* </FetchProvider> */}
             </>
           } />
         </Route>

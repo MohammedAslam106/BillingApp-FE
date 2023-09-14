@@ -3,7 +3,6 @@ import Pagination from '@mui/material/Pagination';
 // eslint-disable-next-line react/prop-types
 export default function BasicPagination({count,setStartInd,setLastInd}) {
     // const [currentPage,setCurrentPage]=useState(1)
-    
   return (
     <div  className=' flex justify-center mt-10 w-[100%]'>
         <Pagination

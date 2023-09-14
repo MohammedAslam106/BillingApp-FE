@@ -2,22 +2,30 @@ import Navbar from "../components/Navbar";
 import {TbReportMoney} from 'react-icons/tb'
 import SideBar from "../components/SideBar";
 import { useEffect, useState } from "react";
-import { useFetch } from "../context/FetchContext";
 import SearchBar from "../components/SearchBar";
+import { request } from "../utils";
 
 // eslint-disable-next-line react/prop-types
 export default function Payments({displaySidebar,setDisplaySidebar,AddButton}){
-    const {bills}=useFetch()
     const [options,setOptions]=useState([])
+    const [bills,setBills]=useState([])
     const rupee=new Intl.NumberFormat('en-IN',{
         style:'currency',
         currency:'INR'
     })
     useEffect(()=>{
+        const fetchBills=async()=>{
+            const response=await request('bill',{})
+            // console.log(response)
+            if(response.response.length){
+                setBills(response.response)
+                setOptions(response.response.filter((bill)=>{
+                    return bill.balanceAmount!=0
+                }))
+            }
+        }
+        fetchBills()
         setDisplaySidebar(false)
-        setOptions(bills.filter((bill)=>{
-            return bill.balanceAmount!=0
-        }))
     },[])
     return(
         <>

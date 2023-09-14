@@ -1,12 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { useFetch } from "../context/FetchContext"
-import { convertNumberToWords } from "../utils"
+import { convertNumberToWords, request } from "../utils"
 
 export default function BillShow({setDisplaySidebar}){
-    
-    const {bills}=useFetch()
     const [billDetails,setBillDetails]=useState(null)
     const [totalAmtInWords,setTotalAmtInWords]=useState('')
     const [showBtn,setShowBtn]=useState(true)
@@ -19,17 +16,25 @@ export default function BillShow({setDisplaySidebar}){
 
 
     useEffect(()=>{
-        setBillDetails(...bills.filter((Bill)=>{
-            if(Bill._id==bill){
-                setTotalAmtInWords(()=>convertNumberToWords(Math.floor(Bill?.totalAmount)))
+        const fetchBills=async()=>{
+            const response=await request('bill',{})
+            // console.log(response)
+            if(response.response.length){
+                setBillDetails(...response.response.filter((Bill)=>{
+                    if(Bill._id==bill){
+                        setTotalAmtInWords(()=>convertNumberToWords(Math.floor(Bill?.totalAmount)))
+                    }
+                    return  Bill._id==bill
+                }
+                ))
             }
-            return  Bill._id==bill
         }
-           ))
+        fetchBills()
         setDisplaySidebar(false)
     },[])
     return(
         <>
+            {/* <Loader/> */}
             <div className=" w-full h-screen grid place-items-center">
             <div className=" w-[100%] h-full flex flex-col justify-center">
                 {/* <h1 className="text-gray-500 font-semibold text-2xl text-center my-5">Final Bill</h1> */}
@@ -139,8 +144,10 @@ export default function BillShow({setDisplaySidebar}){
                         setShowBtn(false)
                         setTimeout(()=>{
                             window.print()
+                        },1000)
+                        setTimeout(()=>{
                             setShowBtn(true)
-                        },1)
+                        },2000)
                     }}  type="button" className=" py-1.5 px-6 font-semibold rounded shadow-sm bg-gray-400 hover:bg-gray-300 text-white">Print</button>
                 </div>}
             </div>

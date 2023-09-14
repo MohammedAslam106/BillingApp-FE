@@ -11,7 +11,6 @@ export default function AuthProvider({children}){
     const [currentUser,setCurrentUser]=useState(null)
     useEffect(()=>{
         setCurrentUser(localStorage.getItem('shopOwner'))
-        console.log('AuthContext line-14')
     },[currentUser])
     const signin=async(username,password)=>{
         const response= (await fetch(`${import.meta.env.VITE_PUBLIC_BE_URL}/api/auth/signin`,{

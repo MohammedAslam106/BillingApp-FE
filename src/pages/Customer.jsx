@@ -1,18 +1,13 @@
 /* eslint-disable no-unused-vars */
 import Navbar from "../components/Navbar";
-import { TbDotsVertical, TbFileInvoice, TbX} from 'react-icons/tb'
+import { TbDotsVertical, TbFileInvoice} from 'react-icons/tb'
 import SideBar from "../components/SideBar";
 import { useEffect, useState } from "react";
-import { useFetch } from "../context/FetchContext";
 import { request } from "../utils";
 import Modal from "../components/Modal";
 import FormBill from "../components/Forms/FormBill";
 import SearchBar from "../components/SearchBar";
 import { useNavigate, useParams } from "react-router-dom";
-import BillSubmit from "../components/StepsInMultiForm/BillSubmit";
-import MultiStepForm from "../components/MultiStepForm";
-import BillAddCustomer from "../components/StepsInMultiForm/BillAddCustomer";
-import BillAddProduct from "../components/StepsInMultiForm/BillAddProduct";
 
 // eslint-disable-next-line react/prop-types
 export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
@@ -23,15 +18,10 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
     const [editBill,setEditBill]=useState(false)
     const [options,setOptions]=useState([])
     const navigate=useNavigate()
-    const {bills,payments}=useFetch()
+    const[bills,setBills]=useState([])
     const {customer}=useParams()
 
     const deleteBill=async(deleteEditBill)=>{
-        payments.forEach(async(payment)=>{
-            if(payment?.bill?._id==deleteEditBill._id){
-                await request(`payment/${payment._id}`,{method:"DELETE"})
-            }
-        })
         console.log(deleteEditBill?.customer?._id)
         console.log(deleteEditBill.customer.bills)
         // eslint-disable-next-line no-unsafe-optional-chaining
@@ -50,10 +40,18 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
     }
 
     useEffect(()=>{
+        const fetchBills=async()=>{
+            const response=await request('bill',{})
+            // console.log(response)
+            if(response.response.length){
+                setBills(response.response)
+                setOptions(response.response.filter((bill)=>{
+                    return bill?.customer?._id==customer
+                }))
+            }
+        }
         setDisplaySidebar(false)
-        setOptions(bills.filter((bill)=>{
-            return bill?.customer?._id==customer
-        }))
+        fetchBills()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     return(

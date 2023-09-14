@@ -9,10 +9,6 @@ import Modal from "../components/Modal";
 import FormBill from "../components/Forms/FormBill";
 import SearchBar from "../components/SearchBar";
 import { useNavigate } from "react-router-dom";
-import BillSubmit from "../components/StepsInMultiForm/BillSubmit";
-import MultiStepForm from "../components/MultiStepForm";
-import BillAddCustomer from "../components/StepsInMultiForm/BillAddCustomer";
-import BillAddProduct from "../components/StepsInMultiForm/BillAddProduct";
 
 // eslint-disable-next-line react/prop-types
 export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
@@ -22,17 +18,10 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
     const [deleteEditBill,setDeleteEditBill]=useState(null)
     const [editBill,setEditBill]=useState(false)
     const [options,setOptions]=useState([])
+    const [bills,setBills]=useState([])
     const navigate=useNavigate()
-    const {bills,payments}=useFetch()
 
     const deleteBill=async(deleteEditBill)=>{
-        payments.forEach(async(payment)=>{
-            if(payment?.bill?._id==deleteEditBill._id){
-                await request(`payment/${payment._id}`,{method:"DELETE"})
-            }
-        })
-        console.log(deleteEditBill?.customer?._id)
-        console.log(deleteEditBill.customer.bills)
         // eslint-disable-next-line no-unsafe-optional-chaining
         const bills=[...deleteEditBill?.customer?.bills?.filter((bill)=>{
             return bill!=deleteEditBill._id
@@ -50,7 +39,15 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
 
     useEffect(()=>{
         setDisplaySidebar(false)
-        setOptions(bills)
+        const fetchBills=async()=>{
+            const response=await request('bill',{})
+            // console.log(response)
+            if(response.response.length){
+                setBills(response.response)
+                setOptions(response.response)
+            }
+        }
+        fetchBills()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     return(
@@ -97,14 +94,14 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
             <Modal isOpen={editBill} closeModal={()=>setEditBill(false)}>
                 <FormBill
                     Editproducts={deleteEditBill?.items?.map((item)=>{
-                        return {product:item.product,quantity:item.quantity,rate:item.price,prevQuantity:item.quantity}
+                        return {product:item.product,quantity:item.quantity,rate:item.price}
                     })}
                     EditCustomer={deleteEditBill?.customer}
                     billNumber={deleteEditBill?.billNumber} 
                     objectId={deleteEditBill?._id}
                     paidAmount={deleteEditBill?.paidAmount}
                     prevProducts={deleteEditBill?.items?.map((item)=>{
-                        return {product:item.product,rate:item.price,quantity:item.quantity}
+                        return {product:item.product,quantity:item.quantity,rate:item.price}
                     })}
                 />
             </Modal>

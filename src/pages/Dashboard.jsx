@@ -3,20 +3,29 @@ import {MdDashboard} from 'react-icons/md'
 import SideBar from "../components/SideBar";
 import { useEffect, useState } from "react";
 import BasicPagination from "../components/Pagination";
-import { useFetch } from "../context/FetchContext";
 import SearchBar from "../components/SearchBar";
 import { useNavigate } from "react-router-dom";
+import { request } from "../utils";
 
 // eslint-disable-next-line react/prop-types
 export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
     const [count,setCount]=useState(0)
     const [startInd,setStartInd]=useState(0)
     const [lastInd,setLastInd]=useState(8)
-    const {customers,setCustomers,customers1}=useFetch()
+    const [customers,setCustomers]=useState([])
+    const [options,setOptions]=useState([])
     const navigate=useNavigate()
     useEffect(()=>{
+        const fetchCustomers=async()=>{
+            const response=await request('customer',{})
+            if(response.response.length){
+                setCustomers(response.response)
+                setOptions(response.response)
+                setCount(Math.ceil(response.response.length/8))
+            }
+        }
+        fetchCustomers()
         setDisplaySidebar(false)
-        setCount(Math.ceil(customers.length/8))
     },[])
     return(
         <>
@@ -25,7 +34,7 @@ export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
                 <Navbar name={'Dashboard'} Logo={MdDashboard} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
                 <div className="  pb-10 mt-16">
                     {/* <h1 className="h1-bg-img mobile:text-[30px] pb-5">Customers List</h1> */}
-                    <SearchBar placeholder={'Search By Ph/Name..'} options={'customers'} setOptions={setCustomers} array={customers1} />
+                    <SearchBar placeholder={'Search By Ph/Name..'} options={'customers'} setOptions={setCustomers} array={options} />
                     <div className=" flex flex-wrap justify-center items-center gap-5 py-15 px-20">
                     {customers?.slice(startInd,lastInd).map((customer,ind)=>{
                          let count=0

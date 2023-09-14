@@ -1,13 +1,23 @@
 /* eslint-disable react/prop-types */
 import { TbPlus } from "react-icons/tb";
 import Dropdown from "../Dropdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../Modal";
-import { useFetch } from "../../context/FetchContext";
 import FormCustomer from "../Forms/FormCustomer";
+import { request } from "../../utils";
 
 export default function BillAddCustomer({formName,customer,setCustomer}){
-    const {customers}=useFetch()
+    const [customers,setCustomers]=useState([])
+    useEffect(()=>{
+        const fetchCustomers=async()=>{
+            const response=await request('customer',{})
+            // console.log(response)
+            if(response.response.length){
+                setCustomers(response.response)
+            }
+        }
+        fetchCustomers()
+    },[])
     const [createCustomer,setCreateCustomer]=useState(false)
     return(
         <>
