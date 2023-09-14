@@ -4,6 +4,7 @@ import SideBar from "../components/SideBar";
 import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import { request } from "../utils";
+import Loader from "react-loaders";
 
 // eslint-disable-next-line react/prop-types
 export default function Payments({displaySidebar,setDisplaySidebar,AddButton}){
@@ -30,7 +31,8 @@ export default function Payments({displaySidebar,setDisplaySidebar,AddButton}){
     return(
         <>
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
-            <div className=" mobile:ml-0 ml-[210px] min-h-screen">
+            <div className=" relative mobile:ml-0 ml-[210px] min-h-screen">
+                <Loader type="ball-spin-fade-loader"/>
                 <Navbar name={'Payments'} Logo={TbReportMoney} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
                 <div className="pb-10 mt-16">
                     <SearchBar options={'payments'} setOptions={setOptions} array={bills} placeholder={'Search By BillNo/Name..'} />

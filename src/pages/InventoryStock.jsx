@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Modal from "../components/Modal";
 import FormInventory from "../components/Forms/FormInventory";
 import { request } from "../utils";
+import Loader from "react-loaders";
 
 // eslint-disable-next-line react/prop-types
 export default function InventoryStock({displaySidebar,setDisplaySidebar,AddButton}){
@@ -34,7 +35,8 @@ export default function InventoryStock({displaySidebar,setDisplaySidebar,AddButt
     return(
         <>
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
-            <div className=" mobile:ml-0 ml-[210px] min-h-screen">
+            <div className=" relative mobile:ml-0 ml-[210px] min-h-screen">
+                <Loader type="ball-spin-fade-loader"/>
                 <Navbar name={'Inventory'} Logo={TbBuildingStore} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
                 <div className=" pb-10 mt-16">
                     {/* <h1 className="h1-bg-img mobile:text-[30px] py-5">Products Available</h1> */}

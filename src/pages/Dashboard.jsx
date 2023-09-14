@@ -30,9 +30,9 @@ export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
     },[])
     return(
         <>
-            <Loader active type="ball-spin-fade-loader"/>
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
-            <div className=" mobile:ml-0 ml-[210px] min-h-screen bg-white">
+            <div className=" relative mobile:ml-0 ml-[210px] min-h-screen bg-white">
+            <Loader active type="ball-spin-fade-loader"/>
                 <Navbar name={'Dashboard'} Logo={MdDashboard} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
                 <div className="  pb-10 mt-16">
                     {/* <h1 className="h1-bg-img mobile:text-[30px] pb-5">Customers List</h1> */}

@@ -1,4 +1,4 @@
-$primary-color: rgb(177, 170, 170);
+$primary-color: rgb(18, 15, 15);
 @import 'loaders.css/src/animations/ball-spin-fade-loader.scss';
 
 .loader-hidden {
@@ -7,14 +7,15 @@ $primary-color: rgb(177, 170, 170);
 .loader-active {
     display: block;
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 50%;
+    right: 50%;
     top: 0;
     bottom: 0;
     margin: auto;
     width: 50px;
     height: 50px;
-    animation: fadeOut 2s 1ms forwards;
+    z-index: 5;
+    animation: fadeOut 1s 1s forwards;
 }
 
 
