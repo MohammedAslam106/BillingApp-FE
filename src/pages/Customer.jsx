@@ -8,6 +8,7 @@ import Modal from "../components/Modal";
 import FormBill from "../components/Forms/FormBill";
 import SearchBar from "../components/SearchBar";
 import { useNavigate, useParams } from "react-router-dom";
+import Loader from "react-loaders";
 
 // eslint-disable-next-line react/prop-types
 export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
@@ -57,7 +58,8 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
     return(
         <>
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
-            <div className=" mobile:ml-0 ml-[210px] min-h-screen">
+            <div className=" relative mobile:ml-0 ml-[210px] min-h-screen">
+                <Loader type="ball-spin-fade-loader"/>
                 <Navbar name={'Bills'} Logo={TbFileInvoice} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
                 <div className="bp-10 mt-16">
                     <SearchBar placeholder={'Search By BillNo/Name..'} options={'bills'} setOptions={setOptions} array={bills}/>
