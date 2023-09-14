@@ -6,6 +6,7 @@ import BasicPagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 import { useNavigate } from "react-router-dom";
 import { request } from "../utils";
+import Loader from "react-loaders";
 
 // eslint-disable-next-line react/prop-types
 export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
@@ -29,6 +30,7 @@ export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
     },[])
     return(
         <>
+            <Loader active type="ball-spin-fade-loader"/>
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
             <div className=" mobile:ml-0 ml-[210px] min-h-screen bg-white">
                 <Navbar name={'Dashboard'} Logo={MdDashboard} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
