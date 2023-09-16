@@ -8,7 +8,6 @@ import Payments from './pages/Payments'
 import {  useState } from 'react'
 import Signin from './pages/Signin'
 import { Route, Routes } from 'react-router-dom'
-import AuthProvider from './context/AuthContext'
 import PageNotFound from './pages/PageNotFound'
 import ProtectedRoute from './ProtectedRoute'
 // import FetchProvider from './context/FetchContext'
@@ -21,7 +20,6 @@ function App() {
   const [createBill,setCreateBill]=useState(false)
   return (
     <>
-    <AuthProvider>
       {/* <FetchProvider> */}
       <Routes>
         <Route path='/' element={<ProtectedRoute/>}>
@@ -72,7 +70,6 @@ function App() {
         <Route path='*' element={<PageNotFound/>}/>
       </Routes>
       {/* </FetchProvider> */}
-    </AuthProvider>
     </>
   )
 }

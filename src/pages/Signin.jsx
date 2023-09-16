@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { TbEye, TbEyeOff } from "react-icons/tb"
 import { useAuth } from "../context/AuthContext"
-import { Navigate } from "react-router-dom"
 import { Toaster, toast } from "react-hot-toast"
 
 export default function Signin(){
@@ -12,7 +11,7 @@ export default function Signin(){
     const [loading,setLoading]=useState(false)
     console.log(window.location.pathname)
     return(
-        !currentUser ?
+        !currentUser &&
         <>
             <Toaster/>
             {/* <div className="buffer"></div> */}
@@ -62,6 +61,6 @@ export default function Signin(){
                     </form>
                 </div>
             </div>
-        </>:<Navigate to={`/`}/>
+        </>
     )
 }

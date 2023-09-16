@@ -1,17 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom"
-import { useAuth } from "./context/AuthContext"
 
 export default function ProtectedRoute(){
-    const {currentUser}=useAuth()
+    const currentUser=localStorage.getItem('shopOwner')
     return(
-        <>
-            {currentUser
+            currentUser
              ? 
-             <>
              <Outlet/>
-             </>
             : 
-            <Navigate to={'/signin'}/>}
-        </>
+            <Navigate to={'/signin'}/>
     )
 }

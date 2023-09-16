@@ -81,8 +81,8 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
                                 size={20}/>
                         </div>)
                         })}
-                            <div  onMouseLeave={()=>setDeleteButton(false)} className="">
-                                {deleteButton && <div style={{left:coordinates.x,top:coordinates.y}} className=" w-28 absolute bg-white rounded shadow-lg border">
+                            <div  onMouseLeave={()=>setDeleteButton(false)} className=" ">
+                                {deleteButton && <div style={{left:coordinates.x,top:coordinates.y}} className={` ml-[-210px] mobile:ml-0 w-28 absolute bg-white rounded shadow-lg border`}>
                                     <button onClick={()=>setEditBill(true)} className=" hover:bg-gray-100 py-1 px-3 w-full text-left ">Edit</button>
                                     <button onClick={()=>deleteBill(deleteEditBill)} className=" hover:bg-gray-100 py-1 px-3 w-full text-left ">Delete</button>
                                     <button onClick={()=>setDeleteButton(false)} className=" hover:bg-gray-100 py-1 px-3 w-full text-left ">Close</button>
