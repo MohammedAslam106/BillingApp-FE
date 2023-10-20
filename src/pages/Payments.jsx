@@ -1,10 +1,10 @@
 import Navbar from "../components/Navbar";
-import {TbReportMoney} from 'react-icons/tb'
+import {TbLoader2, TbReportMoney} from 'react-icons/tb'
 import SideBar from "../components/SideBar";
 import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import { request } from "../utils";
-import Loader from "react-loaders";
+// import Loader from "react-loaders";
 
 // eslint-disable-next-line react/prop-types
 export default function Payments({displaySidebar,setDisplaySidebar,AddButton}){
@@ -30,9 +30,17 @@ export default function Payments({displaySidebar,setDisplaySidebar,AddButton}){
     },[])
     return(
         <>
+            {
+            bills.length==0
+            ?
+            <div className=" w-full h-screen flex justify-center items-center ">
+                <TbLoader2  size={40} className="animate-spin "/>
+            </div>
+            :
+            <>
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
             <div className=" relative mobile:ml-0 ml-[210px] min-h-screen">
-                <Loader type="ball-spin-fade-loader"/>
+                {/* <Loader type="ball-spin-fade-loader"/> */}
                 <Navbar name={'Payments'} Logo={TbReportMoney} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
                 <div className="pb-10 mt-16">
                     <SearchBar options={'payments'} setOptions={setOptions} array={bills} placeholder={'Search By BillNo/Name..'} />
@@ -60,6 +68,8 @@ export default function Payments({displaySidebar,setDisplaySidebar,AddButton}){
                 </div>
             </div>
             <AddButton/>
+            </>
+            }
         </>
     )
 }

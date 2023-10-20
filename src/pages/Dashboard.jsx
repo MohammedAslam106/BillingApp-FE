@@ -6,7 +6,7 @@ import BasicPagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 import { useNavigate } from "react-router-dom";
 import { request } from "../utils";
-import Loader from "react-loaders";
+import { TbLoader2 } from "react-icons/tb";
 
 // eslint-disable-next-line react/prop-types
 export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
@@ -30,9 +30,14 @@ export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
     },[])
     return(
         <>
+            {customers.length==0 ?
+            <div className=" w-full h-screen flex justify-center items-center ">
+                <TbLoader2  size={40} className="animate-spin "/>
+            </div>:
+            <>
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
             <div className=" relative mobile:ml-0 ml-[210px] min-h-screen bg-white">
-            <Loader active type="ball-spin-fade-loader"/>
+            {/* <Loader active type="ball-spin-fade-loader"/> */}
                 <Navbar name={'Dashboard'} Logo={MdDashboard} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
                 <div className="  pb-10 mt-16">
                     {/* <h1 className="h1-bg-img mobile:text-[30px] pb-5">Customers List</h1> */}
@@ -66,6 +71,8 @@ export default function Dashboard({displaySidebar,setDisplaySidebar,AddButton}){
                 </div>
             </div>
                 <AddButton/>
+                </>
+             }
         </>
     )
 }

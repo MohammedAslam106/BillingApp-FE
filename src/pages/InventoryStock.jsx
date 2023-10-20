@@ -1,12 +1,12 @@
 import Navbar from "../components/Navbar";
-import {TbBuildingStore} from 'react-icons/tb'
+import {TbBuildingStore, TbLoader2} from 'react-icons/tb'
 import SideBar from "../components/SideBar";
 import { DoughnutChart } from "../components/Doughnut";
 import { useEffect, useState } from "react";
 import Modal from "../components/Modal";
 import FormInventory from "../components/Forms/FormInventory";
 import { request } from "../utils";
-import Loader from "react-loaders";
+// import Loader from "react-loaders";
 
 // eslint-disable-next-line react/prop-types
 export default function InventoryStock({displaySidebar,setDisplaySidebar,AddButton}){
@@ -34,9 +34,17 @@ export default function InventoryStock({displaySidebar,setDisplaySidebar,AddButt
     },[])
     return(
         <>
+            {
+            products.length==0
+            ?
+            <div className=" w-full h-screen flex justify-center items-center ">
+                <TbLoader2  size={40} className="animate-spin "/>
+            </div>
+            :
+            <>
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
             <div className=" relative mobile:ml-0 ml-[210px] min-h-screen">
-                <Loader type="ball-spin-fade-loader"/>
+                {/* <Loader type="ball-spin-fade-loader"/> */}
                 <Navbar name={'Inventory'} Logo={TbBuildingStore} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
                 <div className=" pb-10 mt-16">
                     {/* <h1 className="h1-bg-img mobile:text-[30px] py-5">Products Available</h1> */}
@@ -74,6 +82,7 @@ export default function InventoryStock({displaySidebar,setDisplaySidebar,AddButt
             <Modal isOpen={updateInventoryModal} closeModal={()=>setUpdateInventoryModal(false)}>
                 <FormInventory setCreateInventory={setUpdateInventoryModal} updateInventory={updateInventory}/>
             </Modal>
+            </>}
         </>
     )
 }

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Navbar from "../components/Navbar";
-import { TbDotsVertical, TbFileInvoice} from 'react-icons/tb'
+import { TbDotsVertical, TbFileInvoice, TbLoader2} from 'react-icons/tb'
 import SideBar from "../components/SideBar";
 import { useEffect, useState } from "react";
 import { request } from "../utils";
@@ -8,7 +8,7 @@ import Modal from "../components/Modal";
 import FormBill from "../components/Forms/FormBill";
 import SearchBar from "../components/SearchBar";
 import { useNavigate, useParams } from "react-router-dom";
-import Loader from "react-loaders";
+// import Loader from "react-loaders";
 
 // eslint-disable-next-line react/prop-types
 export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
@@ -57,9 +57,17 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
     },[])
     return(
         <>
+            {
+            bills.length==0
+            ?
+            <div className=" w-full h-screen flex justify-center items-center ">
+                <TbLoader2  size={40} className="animate-spin "/>
+            </div>
+            :
+            <>
             <SideBar displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar} />
             <div className=" relative mobile:ml-0 ml-[210px] min-h-screen">
-                <Loader type="ball-spin-fade-loader"/>
+                {/* <Loader type="ball-spin-fade-loader"/> */}
                 <Navbar name={'Bills'} Logo={TbFileInvoice} displaySidebar={displaySidebar} setDisplaySidebar={setDisplaySidebar}/>
                 <div className="bp-10 mt-16">
                     <SearchBar placeholder={'Search By BillNo/Name..'} options={'bills'} setOptions={setOptions} array={bills}/>
@@ -111,6 +119,8 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
                     })}
                 />
             </Modal>
+            </>
+            }
         </>
     )
 }
