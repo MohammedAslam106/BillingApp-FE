@@ -45,7 +45,9 @@ export default function Bills({displaySidebar,setDisplaySidebar,AddButton}){
             const response=await request('bill',{})
             // console.log(response)
             if(response.response.length){
-                setBills(response.response)
+                setBills(response.response.filter((bill)=>{
+                    return bill?.customer?._id==customer
+                }))
                 setOptions(response.response.filter((bill)=>{
                     return bill?.customer?._id==customer
                 }))
